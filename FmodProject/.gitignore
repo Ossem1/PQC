@@ -1,0 +1,7 @@
+# FMOD Studio temporary and user-specific files
+.cache/
+.user/
+.restore/
+
+# Generated bank files (omit this if you want to track built audio banks in Git)
+Build/
