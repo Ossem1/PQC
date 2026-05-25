@@ -9,18 +9,25 @@ public class PlayerMovement : MonoBehaviour
     //Values for player movement, can be adjusted in the inspector.
     [SerializeField]private float baseSpeed;
     private float currentSpeed;
-    [SerializeField]private float jumpForce;
+    [SerializeField]private float jumpHeight;
     [SerializeField]private float peakHeightTime;
     [SerializeField]private float coyoteTime;
+    private float groundTimer;
+    private bool canJump;
     //Inputs for player movement.
     InputAction horizontalInput;
     InputAction verticalInput;
 
     //Values needed for movement and actions.
     Rigidbody2D rb;
-    string currentRealm;  //assigned at start and when switched, used for selecting available actions.
+    string currentRealm;
     private bool isFacingRight = true;
     private SpriteRenderer sprite;
+
+    //Variables used IsGrounded function
+    [SerializeField]private float groundCastDistance;
+    [SerializeField]private Vector2 groundCastSize;
+    [SerializeField]private LayerMask groundLayer;
 
     void Start()
     {
@@ -34,16 +41,39 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+    void FixedUpdate()
+    {
+        CoyoteTiming();
+    }
     // Update is called once per frame
     void Update()
     {
         HorizontalMovement();
+        RealityVerticalMovement();
+    }
+    //Gets exact amount of force needed to obtain specific height
+    float JumpForce()
+    {
+        float gravity = Physics2D.gravity.y * rb.gravityScale;
+        return Mathf.Sqrt(-2*gravity*jumpHeight);
     }
 
-    void VerticalMovement()
+    //Reality vertical movement has a charged long jump
+    void RealityVerticalMovement()
     {
-       
+        if(verticalInput.IsPressed() && canJump)
+        {
+            rb.linearVelocity= new Vector2(rb.linearVelocity.x, JumpForce());
+        } 
 
+    }
+    //Singular jump
+     void QuantumVerticalMovement()
+    {
+        if(verticalInput.IsPressed() && canJump)
+        {
+            rb.linearVelocity= new Vector2(rb.linearVelocity.x, JumpForce());
+        } 
 
     }
     //Controls only horizontal movement.
@@ -99,12 +129,29 @@ public class PlayerMovement : MonoBehaviour
     }
     void OnDisable() //Cleanup for current Ienumators and ongoing processes.
     {
-        StartCoroutine(StopHorizontalMovement());
+ 
     }
-
+    //allows player moment to jump when not grounded
     void CoyoteTiming()
     {
-
+        //Sets conditions for coyote time
+        if (!IsGrounded())
+        {
+            groundTimer -= Time.deltaTime;
+        }
+        else
+        {
+            groundTimer = coyoteTime;
+        }
+        //Sets if player can jump
+        if(groundTimer >= 0f)
+        {
+            canJump = true;
+        }
+        else
+        {
+            canJump = false;
+        }
     }
 
     //Flips sprite based on movement direction.
@@ -117,5 +164,23 @@ public class PlayerMovement : MonoBehaviour
             localScale.x *= -1f;
             sprite.transform.localScale = localScale;
         }
+    }
+
+    //Used to find if player is grounded
+    public bool IsGrounded()
+    {
+        if(Physics2D.BoxCast(transform.position,groundCastSize,0,-transform.up, groundCastDistance, groundLayer))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.DrawWireCube(transform.position-transform.up * groundCastDistance,groundCastSize);
     }
 }
