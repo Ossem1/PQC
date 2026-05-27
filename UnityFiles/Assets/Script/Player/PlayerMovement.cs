@@ -3,6 +3,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+    //Ensures required components are present for script to function
+    [RequireComponent(typeof(Rigidbody2D))]
+    // I'd like to add a collider here, but idk if we plan on using capsule or box or whatever
 
 public class PlayerMovement : MonoBehaviour
 {
