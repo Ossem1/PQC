@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]private float peakHeightTime;
     [SerializeField]private float coyoteTime;
     [SerializeField]private float fallMultiplier;
+    private float chargeMultipler = 1f;
     private float groundTimer;
     private bool canJump;
     //Inputs for player movement.
@@ -50,7 +51,8 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         HorizontalMovement();
-        RealityVerticalMovement();
+        //RealityVerticalMovement();
+        QuantumVerticalMovement();
     }
     //Gets exact amount of force needed to obtain specific height
     float JumpForce()
@@ -61,32 +63,35 @@ public class PlayerMovement : MonoBehaviour
 
     //Reality vertical movement has a charged long jump
     //Player should fall faster once jump input is released, or when falling
+    //Charged jumps should freeze player movement, and when releaed push player forward slightly
     void RealityVerticalMovement()
     {
-        float chargeMultipler = 1f;
         if(canJump)
         {
-            if (verticalInput.IsInProgress() && chargeMultipler <= 2f)
+            if (verticalInput.IsPressed() && chargeMultipler <= 1.5f)
             {
-                //Insert charge jump mechanic here
+                chargeMultipler += Time.deltaTime;
+                Debug.Log("Jump is being charged");
             } else if (verticalInput.WasReleasedThisFrame())
             {
-                rb.linearVelocity= new Vector2(rb.linearVelocity.x, JumpForce() *chargeMultipler);
+                rb.AddForce(Vector2.up * (JumpForce() * chargeMultipler),ForceMode2D.Impulse);
+                chargeMultipler = 1;
             }
         }
-        if (!verticalInput.IsPressed() || rb.linearVelocity.y < 0)
+        if (rb.linearVelocity.y <= 2f)
         {
-            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier) * Time.fixedDeltaTime;
         }
     }
     //Singular jump
      void QuantumVerticalMovement()
     {
-        if(verticalInput.IsPressed() && canJump)
+        if(verticalInput.WasPressedThisFrame() && canJump)
         {
-            rb.linearVelocity= new Vector2(rb.linearVelocity.x, JumpForce());
+            rb.AddForce(Vector2.up * JumpForce(),ForceMode2D.Impulse);
+            Debug.Log("jump Activated");
         } 
-        if (!verticalInput.IsPressed() || rb.linearVelocity.y < 0)
+        if (!verticalInput.IsPressed() || rb.linearVelocity.y <= .2f)
         {
             rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
         }
