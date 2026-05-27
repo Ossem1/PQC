@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]private float jumpHeight;
     [SerializeField]private float peakHeightTime;
     [SerializeField]private float coyoteTime;
+    [SerializeField]private float fallMultiplier;
     private float groundTimer;
     private bool canJump;
     //Inputs for player movement.
@@ -55,17 +56,28 @@ public class PlayerMovement : MonoBehaviour
     float JumpForce()
     {
         float gravity = Physics2D.gravity.y * rb.gravityScale;
-        return Mathf.Sqrt(-2*gravity*jumpHeight);
+        return Mathf.Sqrt(-2 * gravity * jumpHeight);
     }
 
     //Reality vertical movement has a charged long jump
+    //Player should fall faster once jump input is released, or when falling
     void RealityVerticalMovement()
     {
-        if(verticalInput.IsPressed() && canJump)
+        float chargeMultipler = 1f;
+        if(canJump)
         {
-            rb.linearVelocity= new Vector2(rb.linearVelocity.x, JumpForce());
-        } 
-
+            if (verticalInput.IsInProgress() && chargeMultipler <= 2f)
+            {
+                //Insert charge jump mechanic here
+            } else if (verticalInput.WasReleasedThisFrame())
+            {
+                rb.linearVelocity= new Vector2(rb.linearVelocity.x, JumpForce() *chargeMultipler);
+            }
+        }
+        if (!verticalInput.IsPressed() || rb.linearVelocity.y < 0)
+        {
+            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+        }
     }
     //Singular jump
      void QuantumVerticalMovement()
@@ -74,7 +86,10 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.linearVelocity= new Vector2(rb.linearVelocity.x, JumpForce());
         } 
-
+        if (!verticalInput.IsPressed() || rb.linearVelocity.y < 0)
+        {
+            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+        }
     }
     //Controls only horizontal movement.
     //This includes a slowdown, and input translation to velocity.
