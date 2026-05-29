@@ -5,23 +5,32 @@ using UnityEngine.InputSystem;
 
     //Ensures required components are present for script to function
     [RequireComponent(typeof(Rigidbody2D))]
-    // I'd like to add a collider here, but idk if we plan on using capsule or box or whatever
+    [RequireComponent(typeof(BoxCollider2D))]
 
 public class PlayerMovement : MonoBehaviour
 {
     //Values for player movement, can be adjusted in the inspector.
+    [Header("Horizontal Movement")]
     [SerializeField]private float baseSpeed;
     private float currentSpeed;
-    [SerializeField]private float jumpHeight;
-    [SerializeField]private float peakHeightTime;
-    [SerializeField]private float coyoteTime;
-    [SerializeField]private float fallMultiplier;
+
+    //Variables for jump mechanics
+    [Header("Jump Variables")]
+    [SerializeField]private float realityJumpHeight;
+    [SerializeField]private float quantumJumpHeight;
+    [SerializeField] [Range(0f,.5f)] private float coyoteTime;
+    [SerializeField] [Range(.5f,2f)]private float fallMultiplier;
+    [SerializeField] [Range(0f,4f)] private float maxJumpCharge;
     private float chargeMultipler = 1f;
+    private bool toggleCharge;
     private float groundTimer;
     private bool canJump;
+
+
     //Inputs for player movement.
     InputAction horizontalInput;
     InputAction verticalInput;
+    InputAction charge;
 
     //Values needed for movement and actions.
     Rigidbody2D rb;
@@ -29,6 +38,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isFacingRight = true;
     private SpriteRenderer sprite;
 
+    [Header("Ground Check Requirments")]
     //Variables used IsGrounded function
     [SerializeField]private float groundCastDistance;
     [SerializeField]private Vector2 groundCastSize;
@@ -40,6 +50,7 @@ public class PlayerMovement : MonoBehaviour
         //actions must be assigned within the input manager.
         horizontalInput = InputSystem.actions.FindAction("HorizontalMovement");
         verticalInput = InputSystem.actions.FindAction("Jump");
+        charge = InputSystem.actions.FindAction("Charge");
 
         rb = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
@@ -53,50 +64,74 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        HorizontalMovement();
-        //RealityVerticalMovement();
-        QuantumVerticalMovement();
+        if (!toggleCharge)
+        {
+            HorizontalMovement();
+        }
+        RealityVerticalMovement();
+
+        Flip();
+        //QuantumVerticalMovement();
     }
     //Gets exact amount of force needed to obtain specific height
-    float JumpForce()
+    float JumpForce(float jumpHeight)
     {
         float gravity = Physics2D.gravity.y * rb.gravityScale;
         return Mathf.Sqrt(-2 * gravity * jumpHeight);
     }
 
     //Reality vertical movement has a charged long jump
-    //Player should fall faster once jump input is released, or when falling
-    //Charged jumps should freeze player movement, and when releaed push player forward slightly
+    //
+    //
     void RealityVerticalMovement()
     {
-        if(canJump)
+        ToggleCharge();
+        //Charge Jump Mechanic
+        Vector2 chargedJumpDirection = new Vector2(GetDirection()/2,1); //Get diagonal upward direction
+        if(toggleCharge == true)
         {
-            if (verticalInput.IsPressed() && chargeMultipler <= 1.5f)
+            if (verticalInput.IsPressed() && chargeMultipler <= maxJumpCharge && canJump)
             {
                 chargeMultipler += Time.deltaTime;
                 Debug.Log("Jump is being charged");
             } else if (verticalInput.WasReleasedThisFrame())
             {
-                rb.AddForce(Vector2.up * (JumpForce() * chargeMultipler),ForceMode2D.Impulse);
+                rb.AddForce(chargedJumpDirection * (JumpForce(realityJumpHeight) + chargeMultipler),ForceMode2D.Impulse);
                 chargeMultipler = 1;
+                Debug.Log("Charged Jump");
+            }
+            if (rb.linearVelocity.y <= 6f && !IsGrounded())
+            {
+                rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier) * Time.fixedDeltaTime;
+            }
+        } else
+        {  
+            //Regular Jump
+            if(verticalInput.WasPressedThisFrame() && canJump && !charge.IsPressed())
+            {
+                rb.AddForce(Vector2.up * JumpForce(quantumJumpHeight),ForceMode2D.Impulse);
+                Debug.Log("regular jump");
+            } 
+            if ((!verticalInput.IsPressed() || rb.linearVelocity.y <= 6f) && !IsGrounded())
+            {
+                rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier) * Time.fixedDeltaTime;
+                Debug.Log("Falling");
             }
         }
-        if (rb.linearVelocity.y <= 2f)
-        {
-            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier) * Time.fixedDeltaTime;
-        }
     }
+
     //Singular jump
      void QuantumVerticalMovement()
     {
         if(verticalInput.WasPressedThisFrame() && canJump)
         {
-            rb.AddForce(Vector2.up * JumpForce(),ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * JumpForce(quantumJumpHeight),ForceMode2D.Impulse);
             Debug.Log("jump Activated");
         } 
-        if (!verticalInput.IsPressed() || rb.linearVelocity.y <= .2f)
+        if ((!verticalInput.IsPressed() || rb.linearVelocity.y <= 6f) && !IsGrounded())
         {
-            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier) * Time.fixedDeltaTime;
+            Debug.Log("Falling");
         }
     }
     //Controls only horizontal movement.
@@ -112,7 +147,6 @@ public class PlayerMovement : MonoBehaviour
         if (horizontalInput.IsInProgress())
         {
             rb.linearVelocity = new Vector2(movementValue.x * currentSpeed, rb.linearVelocity.y);
-            Flip();
         }
         else if(horizontalInput.WasReleasedThisFrame())
         {
@@ -150,9 +184,21 @@ public class PlayerMovement : MonoBehaviour
         }
         rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
     }
-    void OnDisable() //Cleanup for current Ienumators and ongoing processes.
+
+    //actions that occur when player lands
+    void landing()
     {
- 
+        toggleCharge = false;
+        //Play landing particles
+    }
+
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.tag == "Ground")
+        {
+            landing();
+        }
     }
     //allows player moment to jump when not grounded
     void CoyoteTiming()
@@ -177,6 +223,19 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+        //Using charge will freeze movement, but allow for specific actions
+    void ToggleCharge()
+    {
+        if (charge.WasPressedThisFrame() && !verticalInput.IsPressed() && IsGrounded())
+        {
+            toggleCharge = !toggleCharge;
+            if(toggleCharge == false)
+            {
+                StartCoroutine(StopHorizontalMovement());
+            }
+        }
+    }
+
     //Flips sprite based on movement direction.
     private void Flip()
     {
@@ -186,6 +245,18 @@ public class PlayerMovement : MonoBehaviour
             Vector3 localScale = sprite.transform.localScale;
             localScale.x *= -1f;
             sprite.transform.localScale = localScale;
+        }
+    }
+
+    private float GetDirection()
+    {
+        if (isFacingRight)
+        {
+            return 1;
+        }
+        else
+        {
+            return -1;
         }
     }
 
