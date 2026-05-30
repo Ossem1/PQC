@@ -23,24 +23,24 @@ public class PlayerMovement : MonoBehaviour
 {
     //Values for player movement, can be adjusted in the inspector.
     [Header("Horizontal Movement")]
-    [SerializeField]private float baseSpeed;
+    [SerializeField]private float _baseSpeed;
+    private float _currentSpeed;
     
-    [SerializeField] [Range(0f,1f)] private float accelerationTime;
-    [SerializeField] [Range(0f,1f)] private float decelerationTime;
-    private float currentSpeed;
-
+    [SerializeField] [Range(0f,1f)] private float _accelerationTime;
+    [SerializeField] [Range(0f,1f)] private float _decelerationTime;
+   
     //Variables for jump mechanics
     [Header("Jump Variables")]
-    [SerializeField]private float realityJumpHeight;
-    [SerializeField]private float quantumJumpHeight;
-    [SerializeField] [Range(0f,3f)]private float peakCutoff;
-    [SerializeField] [Range(0f,.5f)] private float coyoteTime;
-    [SerializeField] [Range(.5f,2f)]private float fallMultiplier;
-    [SerializeField] [Range(0f,4f)] private float maxJumpCharge;
-    private float chargeMultipler = 1f;
-    private bool toggleCharge;
-    private float groundTimer;
-    private bool canJump;
+    [SerializeField]private float _realityJumpHeight;
+    [SerializeField]private float _quantumJumpHeight;
+    [SerializeField] [Range(0f,3f)]private float _peakCutoff;
+    [SerializeField] [Range(0f,.5f)] private float _coyoteTime;
+    [SerializeField] [Range(.5f,2f)]private float _fallMultiplier;
+    [SerializeField] [Range(0f,4f)] private float _maxJumpCharge;
+    private float _chargeMultipler = 1f;
+    private bool _toggleCharge;
+    private float _groundTimer;
+    private bool _canJump;
 
     //Inputs for player movement.
     PlayerInput playerInput;
@@ -48,13 +48,13 @@ public class PlayerMovement : MonoBehaviour
     //Values needed for movement and actions.
     Rigidbody2D rb;
     string currentRealm;
-    private bool isFacingRight = true;
+    private bool _isFacingRight = true;
     private SpriteRenderer sprite;
 
     [Header("Ground Check Requirments")]
     //Variables used IsGrounded function
-    [SerializeField]private float groundCastDistance;
-    [SerializeField]private Vector2 groundCastSize;
+    [SerializeField]private float _groundCastDistance;
+    [SerializeField]private Vector2 _groundCastSize;
     [SerializeField]private LayerMask groundLayer;
 
     //Coroutines
@@ -83,7 +83,7 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!toggleCharge)
+        if (!_toggleCharge)
         {
             HorizontalMovement();
         }
@@ -106,32 +106,32 @@ public class PlayerMovement : MonoBehaviour
     {
         //Charge Jump Mechanic
         Vector2 chargedJumpDirection = new Vector2(GetDirection()/2f,1).normalized; //Get diagonal upward direction
-        if(toggleCharge == true)
+        if(_toggleCharge == true)
         {
-            if (playerInput.jumpHeld && chargeMultipler <= maxJumpCharge && canJump)
+            if (playerInput.jumpHeld && _chargeMultipler <= _maxJumpCharge && _canJump)
             {
-                chargeMultipler += Time.fixedDeltaTime;
+                _chargeMultipler += Time.fixedDeltaTime;
             } 
             
             else if (playerInput.jumpReleased)
             {
-                rb.AddForce(chargedJumpDirection * (JumpForce(realityJumpHeight) + chargeMultipler),ForceMode2D.Impulse);
-                chargeMultipler = 1;
+                rb.AddForce(chargedJumpDirection * (JumpForce(_realityJumpHeight) + _chargeMultipler),ForceMode2D.Impulse);
+                _chargeMultipler = 1;
             }
-            if (rb.linearVelocity.y <= peakCutoff && !IsGrounded())
+            if (rb.linearVelocity.y <= _peakCutoff && !IsGrounded())
             {
-                rb.linearVelocity += Vector2.up * (Physics2D.gravity.y * fallMultiplier) * Time.fixedDeltaTime;
+                rb.linearVelocity += Vector2.up * (Physics2D.gravity.y * _fallMultiplier) * Time.fixedDeltaTime;
             }
         } else
         {  
             //Regular Jump
-            if(playerInput.jumpPressed && canJump && !playerInput.chargeAction)
+            if(playerInput.jumpPressed && _canJump && !playerInput.chargeAction)
             {
-                rb.AddForce(Vector2.up * JumpForce(realityJumpHeight),ForceMode2D.Impulse);
+                rb.AddForce(Vector2.up * JumpForce(_realityJumpHeight),ForceMode2D.Impulse);
             } 
-            if ((!playerInput.jumpHeld || rb.linearVelocity.y <= peakCutoff) && !IsGrounded())
+            if ((!playerInput.jumpHeld || rb.linearVelocity.y <= _peakCutoff) && !IsGrounded())
             {
-                rb.linearVelocity += Vector2.up * (Physics2D.gravity.y * fallMultiplier) * Time.fixedDeltaTime;
+                rb.linearVelocity += Vector2.up * (Physics2D.gravity.y * _fallMultiplier) * Time.fixedDeltaTime;
 
             }
         }
@@ -140,13 +140,13 @@ public class PlayerMovement : MonoBehaviour
     //Singular jump
     void QuantumVerticalMovement()
     {
-        if(playerInput.jumpPressed && canJump)
+        if(playerInput.jumpPressed && _canJump)
         {
-            rb.AddForce(Vector2.up * JumpForce(quantumJumpHeight),ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * JumpForce(_quantumJumpHeight),ForceMode2D.Impulse);
         } 
-        if ((!playerInput.jumpHeld || rb.linearVelocity.y <= peakCutoff) && !IsGrounded())
+        if ((!playerInput.jumpHeld || rb.linearVelocity.y <= _peakCutoff) && !IsGrounded())
         {
-            rb.linearVelocity += Vector2.up * (Physics2D.gravity.y * fallMultiplier) * Time.fixedDeltaTime;
+            rb.linearVelocity += Vector2.up * (Physics2D.gravity.y * _fallMultiplier) * Time.fixedDeltaTime;
         }
     }
 
@@ -170,7 +170,7 @@ public class PlayerMovement : MonoBehaviour
         }
         if (playerInput.movementInput != Vector2.zero)
         {
-            rb.linearVelocity = new Vector2(playerInput.movementInput.x * currentSpeed, rb.linearVelocity.y);
+            rb.linearVelocity = new Vector2(playerInput.movementInput.x * _currentSpeed, rb.linearVelocity.y);
         }
         else if(playerInput.movementStoped)
         {
@@ -192,31 +192,31 @@ public class PlayerMovement : MonoBehaviour
     IEnumerator Accelerate() 
     {
         float elapsed = 0f;
-        float startSpeed = currentSpeed;
-        while (elapsed < accelerationTime)
+        float startSpeed = _currentSpeed;
+        while (elapsed < _accelerationTime)
         {
             // Bail early if input was released mid-acceleration
             if (playerInput.movementStoped)
             {
                 yield break;
             }
-            currentSpeed = Mathf.Lerp(startSpeed, baseSpeed, elapsed / accelerationTime);
+            _currentSpeed = Mathf.Lerp(startSpeed, _baseSpeed, elapsed / _accelerationTime);
             elapsed += Time.deltaTime;
             yield return null;
         }
-        currentSpeed = baseSpeed;
+        _currentSpeed = _baseSpeed;
     }
 
     //Stops horizontal movement gradually
     //This will take over horizontal velocity
     IEnumerator Decelerate()
     {
-         currentSpeed = 0f;
+         _currentSpeed = 0f;
         float elapsed = 0f;
         float startVelocityX = rb.linearVelocity.x;
-        while (elapsed < decelerationTime)
+        while (elapsed < _decelerationTime)
         {
-            float t = elapsed / decelerationTime;
+            float t = elapsed / _decelerationTime;
             rb.linearVelocity = new Vector2(Mathf.Lerp(startVelocityX, 0f, t), rb.linearVelocity.y);
             elapsed += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
@@ -227,8 +227,8 @@ public class PlayerMovement : MonoBehaviour
     //actions that occur when player lands
     void OnLand()
     {
-        toggleCharge = false;
-        chargeMultipler = 1f;
+        _toggleCharge = false;
+        _chargeMultipler = 1f;
         //Play landing particles
     }
 
@@ -245,13 +245,13 @@ public class PlayerMovement : MonoBehaviour
         //Sets conditions for coyote time
         if (!IsGrounded())
         {
-            groundTimer -= Time.deltaTime;
+            _groundTimer -= Time.deltaTime;
         }
         else
         {
-            groundTimer = coyoteTime;
+            _groundTimer = _coyoteTime;
         }
-        canJump = groundTimer >= 0f;
+        _canJump = _groundTimer >= 0f;
     }
 
     //Using charge will freeze movement, but allow for specific actions
@@ -259,8 +259,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (playerInput.chargeAction && !playerInput.jumpHeld && IsGrounded())
         {
-            toggleCharge = !toggleCharge;
-            if(toggleCharge)
+            _toggleCharge = !_toggleCharge;
+            if(_toggleCharge)
             {
                 if(_stopMovement != null)
                 {
@@ -274,9 +274,9 @@ public class PlayerMovement : MonoBehaviour
     //Flips sprite based on movement direction.
     private void Flip()
     {
-        if (isFacingRight && playerInput.movementInput.x < 0f || !isFacingRight && playerInput.movementInput.x > 0f)
+        if (_isFacingRight && playerInput.movementInput.x < 0f || !_isFacingRight && playerInput.movementInput.x > 0f)
         {
-            isFacingRight = !isFacingRight;
+            _isFacingRight = !_isFacingRight;
             Vector3 localScale = sprite.transform.localScale;
             localScale.x *= -1f;
             sprite.transform.localScale = localScale;
@@ -285,18 +285,18 @@ public class PlayerMovement : MonoBehaviour
 
     private float GetDirection()
     {
-        float direction = (isFacingRight) ? 1f: -1;
+        float direction = (_isFacingRight) ? 1f: -1;
         return direction;
     }
 
     //Used to find if player is grounded
     public bool IsGrounded()
     {
-        return Physics2D.BoxCast(transform.position,groundCastSize,0,-transform.up, groundCastDistance, groundLayer);
+        return Physics2D.BoxCast(transform.position,_groundCastSize,0,-transform.up, _groundCastDistance, groundLayer);
     }
 
     void OnDrawGizmosSelected()
     {
-        Gizmos.DrawWireCube(transform.position-transform.up * groundCastDistance,groundCastSize);
+        Gizmos.DrawWireCube(transform.position-transform.up * _groundCastDistance,_groundCastSize);
     }
 }
