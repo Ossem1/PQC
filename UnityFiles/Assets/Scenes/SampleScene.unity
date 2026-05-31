@@ -212,7 +212,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e20b0d527224752784e67cfd07cb097, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestObjectSwitch
-  normalRealm: 1
+  realityRealm: 1
   quantum: {fileID: 401250022}
   normal: {fileID: 168662080}
 --- !u!1 &168662080
@@ -722,7 +722,7 @@ GameObject:
   - component: {fileID: 1492590060}
   - component: {fileID: 1492590061}
   m_Layer: 6
-  m_Name: w
+  m_Name: TempPlatform
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -803,7 +803,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fe26c371a934e758bfcd561fed6a733, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectBase
-  normalRealm: 1
+  realityRealm: 1
 --- !u!114 &1492590061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -816,7 +816,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e20b0d527224752784e67cfd07cb097, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestObjectSwitch
-  normalRealm: 1
+  realityRealm: 1
   quantum: {fileID: 1520177809}
   normal: {fileID: 422895959}
 --- !u!1 &1520177809
@@ -1075,8 +1075,28 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4714196382092392292, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
+      propertyPath: _baseSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714196382092392292, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
       propertyPath: peakCutoff
       value: 2.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714196382092392292, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
+      propertyPath: _coyoteTime
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714196382092392292, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
+      propertyPath: _peakCutoff
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714196382092392292, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
+      propertyPath: _maxJumpCharge
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714196382092392292, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
+      propertyPath: _fallMultiplier
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 4714196382092392292, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
       propertyPath: accelerationTime
@@ -1085,6 +1105,34 @@ PrefabInstance:
     - target: {fileID: 4714196382092392292, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
       propertyPath: decelerationTime
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714196382092392292, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
+      propertyPath: _accelerationTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714196382092392292, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
+      propertyPath: _decelerationTime
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714196382092392292, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
+      propertyPath: _groundCastSize.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714196382092392292, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
+      propertyPath: _groundCastSize.y
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714196382092392292, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
+      propertyPath: _quantumJumpHeight
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714196382092392292, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
+      propertyPath: _realityJumpHeight
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714196382092392292, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
+      propertyPath: _groundCastDistance
+      value: -0.17
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

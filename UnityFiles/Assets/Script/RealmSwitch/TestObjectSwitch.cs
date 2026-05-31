@@ -11,26 +11,26 @@ public class TestObjectSwitch : ObjectBase
     private bool updated;
 
 
-    void Awake()
+    void OnEnable()
     {
-        updated = !normalRealm;
+        updated = !realityRealm;
     }
 
     void FixedUpdate()
     {
-        if (updated != normalRealm)
+        if (updated != realityRealm)
         {
-            if (normalRealm)
+            if (realityRealm)
             {
                 quantum.SetActive(false);
                 normal.SetActive(true);
-                updated = normalRealm;
+                updated = realityRealm;
             }
-            else if (!normalRealm)
+            else if (!realityRealm)
             {
                 quantum.SetActive(true);
                 normal.SetActive(false);
-                updated = normalRealm;
+                updated = realityRealm;
             }
         }
     }

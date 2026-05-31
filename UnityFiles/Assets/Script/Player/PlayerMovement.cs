@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -19,7 +20,7 @@ using UnityEngine.InputSystem;
     /// Max Jump Charge:  Increase in distance when using charged jump, only additive to total height.
 
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : ObjectBase
 {
     //Values for player movement, can be adjusted in the inspector.
     [Header("Horizontal Movement")]
@@ -47,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
 
     //Values needed for movement and actions.
     Rigidbody2D rb;
-    string currentRealm;
+    private bool updatedRealm;  //Current Assigned Realm
     private bool _isFacingRight = true;
     private SpriteRenderer sprite;
 
@@ -61,6 +62,12 @@ public class PlayerMovement : MonoBehaviour
     Coroutine _stopMovement;
     Coroutine _changeSpeed;
 
+    //Delegated Methods
+    private delegate void VerticalMovementBehavior();
+    private VerticalMovementBehavior currentVerticalMovement; 
+    private delegate void currentChargeAction();
+    private VerticalMovementBehavior chargeAction;
+
     //Gets all components needed
     void GetComponents()
     {
@@ -68,15 +75,17 @@ public class PlayerMovement : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
         playerInput = GetComponent<PlayerInput>();
     }
-    void Awake()
+    void OnEnable()
     {
-        
-        GetComponents();
+        GetComponents();           
+        updatedRealm = !realityRealm;
+        RealmSwitchController.realmSwitched += AssignMovementBehavior;      //when realm is switched this will activate changing movement type
+        AssignMovementBehavior();
     }
     // Update is called once per frame
     void Update()
     {
-        ToggleCharge();
+        if(chargeAction != null) { chargeAction(); }      //Current Assigned action to charge key
         CoyoteTiming();
         Flip();
     }
@@ -87,11 +96,34 @@ public class PlayerMovement : MonoBehaviour
         {
             HorizontalMovement();
         }
-        RealityVerticalMovement();
-        //QuantumVerticalMovement();
+        if(currentVerticalMovement != null) {currentVerticalMovement();} else { RealityVerticalMovement();}                     //Invokes the current movement type
 
         playerInput.ResetInputs();
     }
+    //This get used on Realm swap to change current behaviors of movement
+    //Cancels all chargeAction, and correctly adjust for the new movement
+    void AssignMovementBehavior()
+    {
+        if (updatedRealm != realityRealm)              //Assigns correct vertical movement to event
+        {
+            if (realityRealm)
+            {
+                chargeAction = ToggleCharge;
+                currentVerticalMovement = RealityVerticalMovement;
+                Debug.Log("Current Realm = Normal");
+                updatedRealm = realityRealm;
+            }
+            else
+            {
+                chargeAction = null;
+                _toggleCharge = false;
+                currentVerticalMovement = QuantumVerticalMovement;
+                Debug.Log("Current Realm = Quantum");
+                updatedRealm = realityRealm;
+            }
+        }
+    }
+
     //Gets exact amount of force needed to obtain specific height
     float JumpForce(float jumpHeight)
     {

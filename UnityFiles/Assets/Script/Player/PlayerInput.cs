@@ -9,7 +9,6 @@ public class PlayerInput : MonoBehaviour
     InputAction horizontalInput;
     InputAction verticalInput;
     InputAction chargeInput;
-
     // Realm switch input
     InputAction realmSwitcheroo;
     
@@ -21,8 +20,10 @@ public class PlayerInput : MonoBehaviour
     public bool jumpPressed;
     public bool jumpReleased;
     public bool jumpHeld;
-    [Header("Action Movment Inputs")]
+
+    [Header("Action Inputs")]
     [HideInInspector]public bool chargeAction;
+    [HideInInspector]public bool realmSwapAction;
 
 
     void Start()
@@ -48,14 +49,16 @@ public class PlayerInput : MonoBehaviour
 
         //Action Inputs
         chargeAction = chargeInput.WasPressedThisFrame();
-
+        realmSwapAction = realmSwitcheroo.WasPressedThisFrame();
+    }
+    void RealmSwitchInput()
+    {
         //Swap Input
-        if (realmSwitcheroo.WasPressedThisFrame())
+        if (realmSwapAction)
         {
-            RealmSwitchController.SwapRealm();
+            RealmSwitchController.SwapRealm();      //Invokes the swap realm event
         }
     }
-
     public void ResetInputs()
     {
         movementStarted = false;
@@ -68,6 +71,7 @@ public class PlayerInput : MonoBehaviour
     void Update()
     {
         InputReader();
+        RealmSwitchInput();
     }
 
 }
