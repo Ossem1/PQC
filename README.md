@@ -6,7 +6,7 @@ Welcome to the official repository for **Project Quantum Cat (PQC)**. This repos
 * **Brandon Hendricks** — Lead Programmer & 2D Artist
 * **Ethan Lemons** — Back-End Architect
 * **Andre Godoi** — Sound Designer & Composer
-* **Andrew Warejko** - VFX & Graphics Programmer
+* **Andrew Warejko** — VFX & Graphics Programmer
 
 **Proprietary License & Usage Policy:**
 Copyright © 2025 IronFeather. All Rights Reserved. All assets contained within this repository—including but not limited to source code, artwork, UI elements, musical tracks, and sound effects—are the sole intellectual property of **IronFeather**. 
