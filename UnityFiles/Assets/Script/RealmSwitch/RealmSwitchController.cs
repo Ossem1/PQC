@@ -3,45 +3,15 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using System;
 
+// This was meant to do much more, but slowly got simplified.
+// All this does is house the event, and has a method to trigger it. The input script triggers this.
+
 public class RealmSwitchController : MonoBehaviour
 {
-    // This script, despite being the "controller", is incredibly simple. You press button, variable updates.
-    // It also triggers an event, which pings all objects to check the realm variable on this script.
-
-    InputAction realmSwitch
     public static event Action realmSwitched;        // This is the event that pings all objects to update
-    private bool normalRealm = true;
 
-    private void Start()
-    {
-        realmSwitch = InputSystem.action.FindAction("RealmSwitch");
-    }
-
-    private void RealmSwap(InputAction.CallbackContext context)
+    public static void SwapRealm()                   // This is where the event is triggered
     {
         realmSwitched?.Invoke();
     }
-
-    private void SwapRealmBool()
-    {
-        normalRealm = !normalRealm;
-    }
-
-    private void OnEnable()
-    {
-        realmSwitchAction.action.performed += RealmSwap;
-        realmSwitchAction.action.performed += SwapRealmBool;
-    }
-
-    private void OnDisable()
-    {
-        realmSwitchAction.action.performed -= RealmSwap;
-        realmSwitchAction.action.performed -= SwapRealmBool;
-    }
-
-    void Update()
-    {
-        Debug.Log(normalRealm);
-    }
-
 }
