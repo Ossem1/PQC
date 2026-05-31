@@ -4,7 +4,7 @@ Welcome to the official repository for **Project Quantum Cat (PQC)**. This repos
 
 **Development Team:**
 * **Brandon Hendricks** — Lead Programmer & 2D Artist
-* **Ethan Lemons** — Lead Programmer
+* **Ethan Lemons** — Programmer
 * **Andre Godoi** — Sound Designer & Composer
 
 **Proprietary License & Usage Policy:**
@@ -15,3 +15,7 @@ Copyright © 2025 IronFeather. All Rights Reserved. All assets contained within 
 * **Public Review Only:** Permission is granted solely to clone, download, or view this repository for the express purpose of code review, structural inspection, and academic or professional evaluation.
 
 By interacting with, cloning, or downloading this repository, you explicitly agree to adhere to these proprietary ownership terms. For professional inquiries, feedback, or questions regarding Project Quantum Cat, please reach out to the development team through the official **IronFeather** organization channels.
+
+PQC DEMO: https://iron-feather.itch.io/quantum-cat
+IRONFEATHER DISCORD: https://discord.gg/hjCNXmZq8E
+CONTACT: studioironfeather@gmail.com
