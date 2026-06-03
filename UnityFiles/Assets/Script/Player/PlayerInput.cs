@@ -11,6 +11,8 @@ public class PlayerInput : MonoBehaviour
     InputAction chargeInput;
     // Realm switch input
     InputAction realmSwitcheroo;
+
+    InputAction interactor;
     
     [Header("Horizontal Movment Inputs")]
     public Vector2 movementInput;
@@ -24,6 +26,7 @@ public class PlayerInput : MonoBehaviour
     [Header("Action Inputs")]
     [HideInInspector]public bool chargeAction;
     [HideInInspector]public bool realmSwapAction;
+    [HideInInspector]public bool interaction;
 
 
     void Start()
@@ -34,6 +37,7 @@ public class PlayerInput : MonoBehaviour
         verticalInput = InputSystem.actions.FindAction("Jump");
         chargeInput = InputSystem.actions.FindAction("Charge");
         realmSwitcheroo = InputSystem.actions.FindAction("RealmSwitch");
+        interactor = InputSystem.actions.FindAction("Interact");
     }
     void InputReader()
     {
@@ -50,6 +54,7 @@ public class PlayerInput : MonoBehaviour
         //Action Inputs
         chargeAction = chargeInput.WasPressedThisFrame();
         realmSwapAction = realmSwitcheroo.WasPressedThisFrame();
+        interaction = interactor.IsPressed();
     }
     void RealmSwitchInput()
     {
@@ -59,6 +64,15 @@ public class PlayerInput : MonoBehaviour
             RealmSwitchController.SwapRealm();      //Invokes the swap realm event
         }
     }
+
+    void Interact()
+    {
+        if (interaction)
+        {
+            PlayerInteraction.Interact();           // Invokes the Interaction event
+        }
+    }
+
     public void ResetInputs()
     {
         movementStarted = false;
@@ -72,6 +86,7 @@ public class PlayerInput : MonoBehaviour
     {
         InputReader();
         RealmSwitchInput();
+        Interact();
     }
 
 }
