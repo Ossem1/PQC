@@ -47,7 +47,6 @@ public class PlayerMovement : ObjectBase
     PlayerInput playerInput;
 
     //Values needed for movement and actions.
-    Rigidbody2D rb;
     private bool updatedRealm;  //Current Assigned Realm
     private bool _isFacingRight = true;
     private SpriteRenderer sprite;
@@ -71,12 +70,12 @@ public class PlayerMovement : ObjectBase
     //Gets all components needed
     void GetComponents()
     {
-        rb = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
         playerInput = GetComponent<PlayerInput>();
     }
-    void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         GetComponents();           
         updatedRealm = !realityRealm;
         RealmSwitchController.realmSwitched += AssignMovementBehavior;      //when realm is switched this will activate changing movement type
@@ -90,8 +89,9 @@ public class PlayerMovement : ObjectBase
         Flip();
     }
 
-    void FixedUpdate()
+    protected override void FixedUpdate()
     {
+        base.FixedUpdate();
         if (!_toggleCharge)
         {
             HorizontalMovement();

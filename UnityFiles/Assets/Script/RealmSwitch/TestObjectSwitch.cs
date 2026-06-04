@@ -7,29 +7,31 @@ public class TestObjectSwitch : ObjectBase
     // Then, it does that
     [Space]
     public GameObject quantum;
-    public GameObject normal;
+    public GameObject reality;
     private bool updated;
 
 
-    void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         updated = !realityRealm;
     }
 
-    void FixedUpdate()
+    protected override void FixedUpdate()
     {
+        base.FixedUpdate();
         if (updated != realityRealm)
         {
             if (realityRealm)
             {
                 quantum.SetActive(false);
-                normal.SetActive(true);
+                reality.SetActive(true);
                 updated = realityRealm;
             }
             else if (!realityRealm)
             {
                 quantum.SetActive(true);
-                normal.SetActive(false);
+                reality.SetActive(false);
                 updated = realityRealm;
             }
         }

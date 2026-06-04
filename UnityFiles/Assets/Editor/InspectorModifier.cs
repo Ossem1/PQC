@@ -6,24 +6,21 @@ using UnityEditor;
 public class InspectorModifier : Editor
 {
     SerializedProperty isMovingProp;
-    SerializedProperty point1Prop;
-    SerializedProperty point2Prop;
+    SerializedProperty pointsProp;
 
     SerializedProperty isMovingProp_q;
-    SerializedProperty point1Prop_q;
-    SerializedProperty point2Prop_q;
 
-    private readonly string[] filter = { "isMoving", "point1", "point2", "isMoving_q", "point1_q", "point2_q" };
+    SerializedProperty movingSpeedProp;
+
+    private readonly string[] filter = { "isMoving", "points", "isMoving_q", "movingSpeed" };
 
     void OnEnable()
     {
         isMovingProp = serializedObject.FindProperty("isMoving");
-        point1Prop = serializedObject.FindProperty("point1");
-        point2Prop = serializedObject.FindProperty("point2");
+        pointsProp = serializedObject.FindProperty("points");
 
         isMovingProp_q = serializedObject.FindProperty("isMoving_q");
-        point1Prop_q = serializedObject.FindProperty("point1_q");
-        point2Prop_q = serializedObject.FindProperty("point2_q");
+        movingSpeedProp = serializedObject.FindProperty("movingSpeed");
     }
 
     public override void OnInspectorGUI()
@@ -43,8 +40,8 @@ public class InspectorModifier : Editor
                     if (iterator.boolValue)
                     {
                         EditorGUI.indentLevel++;
-                        EditorGUILayout.PropertyField(serializedObject.FindProperty("point1"));
-                        EditorGUILayout.PropertyField(serializedObject.FindProperty("point2"));
+                        EditorGUILayout.PropertyField(serializedObject.FindProperty("points"));
+                        EditorGUILayout.PropertyField(serializedObject.FindProperty("movingSpeed"));
                         EditorGUI.indentLevel--;
                     }
                 }
@@ -55,8 +52,8 @@ public class InspectorModifier : Editor
                     if (iterator.boolValue)
                     {
                         EditorGUI.indentLevel++;
-                        EditorGUILayout.PropertyField(serializedObject.FindProperty("point1_q"));
-                        EditorGUILayout.PropertyField(serializedObject.FindProperty("point2_q"));
+                        EditorGUILayout.PropertyField(serializedObject.FindProperty("points"));
+                        EditorGUILayout.PropertyField(serializedObject.FindProperty("movingSpeed"));
                         EditorGUI.indentLevel--;
                     }
                 }

@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 141858506}
   - component: {fileID: 141858507}
   - component: {fileID: 141858508}
+  - component: {fileID: 141858509}
   m_Layer: 6
   m_Name: Square
   m_TagString: Ground
@@ -213,8 +214,43 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestObjectSwitch
   realityRealm: 1
+  isPushable: 0
+  isPressureplate: 0
+  isMoving: 0
+  points: {x: -2.65, y: 6.34}
+  movingSpeed: 0
+  isPushable_q: 0
+  isPressureplate_q: 0
+  isMoving_q: 0
   quantum: {fileID: 401250022}
-  normal: {fileID: 168662080}
+  reality: {fileID: 168662080}
+--- !u!50 &141858509
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 141858504}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 1
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 0
 --- !u!1 &168662080
 GameObject:
   m_ObjectHideFlags: 0
@@ -719,8 +755,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1492590059}
   - component: {fileID: 1492590057}
-  - component: {fileID: 1492590060}
   - component: {fileID: 1492590061}
+  - component: {fileID: 1492590062}
   m_Layer: 6
   m_Name: TempPlatform
   m_TagString: Ground
@@ -791,19 +827,6 @@ Transform:
   - {fileID: 1520177810}
   m_Father: {fileID: 2121773975}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1492590060
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1492590056}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fe26c371a934e758bfcd561fed6a733, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ObjectBase
-  realityRealm: 1
 --- !u!114 &1492590061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -817,8 +840,43 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestObjectSwitch
   realityRealm: 1
+  isPushable: 0
+  isPressureplate: 0
+  isMoving: 0
+  points: {x: -3.57, y: 6.32}
+  movingSpeed: 2
+  isPushable_q: 0
+  isPressureplate_q: 0
+  isMoving_q: 1
   quantum: {fileID: 1520177809}
-  normal: {fileID: 422895959}
+  reality: {fileID: 422895959}
+--- !u!50 &1492590062
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1492590056}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &1520177809
 GameObject:
   m_ObjectHideFlags: 0
