@@ -129,10 +129,10 @@ GameObject:
   m_Component:
   - component: {fileID: 141858506}
   - component: {fileID: 141858507}
-  - component: {fileID: 141858508}
   - component: {fileID: 141858509}
+  - component: {fileID: 141858510}
   m_Layer: 6
-  m_Name: Square
+  m_Name: Ground
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -201,29 +201,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &141858508
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 141858504}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e20b0d527224752784e67cfd07cb097, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TestObjectSwitch
-  realityRealm: 1
-  isPushable: 0
-  isPressureplate: 0
-  isMoving: 0
-  points: {x: -2.65, y: 6.34}
-  movingSpeed: 0
-  isPushable_q: 0
-  isPressureplate_q: 0
-  isMoving_q: 0
-  quantum: {fileID: 401250022}
-  reality: {fileID: 168662080}
 --- !u!50 &141858509
 Rigidbody2D:
   serializedVersion: 5
@@ -251,6 +228,32 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
+--- !u!114 &141858510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 141858504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e20b0d527224752784e67cfd07cb097, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestObjectSwitch
+  rb: {fileID: 0}
+  isPulled: 0
+  overrideConstraintCheck: 0
+  realityRealm: 1
+  isPushable: 0
+  isPressureplate: 0
+  isMoving: 0
+  points: {x: 0, y: 0}
+  movingSpeed: 0
+  isPushable_q: 0
+  isPressureplate_q: 0
+  isMoving_q: 0
+  quantum: {fileID: 401250022}
+  reality: {fileID: 168662080}
 --- !u!1 &168662080
 GameObject:
   m_ObjectHideFlags: 0
@@ -745,6 +748,55 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1453384348 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 347361928863945460, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
+  m_PrefabInstance: {fileID: 8723659771432499100}
+  m_PrefabAsset: {fileID: 0}
+--- !u!255 &1453384349
+FixedJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1453384348}
+  m_Enabled: 0
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_BreakAction: 3
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: -0.9, y: -3.87}
+  m_DampingRatio: 0
+  m_Frequency: 0
+--- !u!114 &1453384357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1453384348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 011cc973e3bde534ea4bcfa53fc57012, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerPullPush
+--- !u!114 &1453384358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1453384348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d1cf733474ee845296cb821e155d76e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
+  interactionAction: {fileID: 8663678549712936366, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
 --- !u!1 &1492590056
 GameObject:
   m_ObjectHideFlags: 0
@@ -758,7 +810,7 @@ GameObject:
   - component: {fileID: 1492590061}
   - component: {fileID: 1492590062}
   m_Layer: 6
-  m_Name: TempPlatform
+  m_Name: Cube
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -839,8 +891,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e20b0d527224752784e67cfd07cb097, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestObjectSwitch
+  rb: {fileID: 0}
+  isPulled: 0
+  overrideConstraintCheck: 0
   realityRealm: 1
-  isPushable: 0
+  isPushable: 1
   isPressureplate: 0
   isMoving: 0
   points: {x: -3.57, y: 6.32}
@@ -858,7 +913,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1492590056}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -876,7 +931,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 1
 --- !u!1 &1520177809
 GameObject:
   m_ObjectHideFlags: 0
@@ -1192,10 +1247,23 @@ PrefabInstance:
       propertyPath: _groundCastDistance
       value: -0.17
       objectReference: {fileID: 0}
+    - target: {fileID: 4714196382092392292, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
+      propertyPath: overrideConstraintCheck
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 347361928863945460, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
+      insertIndex: 4
+      addedObject: {fileID: 1453384349}
+    - targetCorrespondingSourceObject: {fileID: 347361928863945460, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
+      insertIndex: 7
+      addedObject: {fileID: 1453384357}
+    - targetCorrespondingSourceObject: {fileID: 347361928863945460, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1453384358}
   m_SourcePrefab: {fileID: 100100000, guid: a6472c86d1e29a74fa0e525c26825176, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

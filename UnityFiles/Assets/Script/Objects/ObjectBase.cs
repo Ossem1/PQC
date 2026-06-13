@@ -7,12 +7,14 @@ public class ObjectBase : MonoBehaviour
     // Generic variables
     private Vector2 _position;
     private bool _direction = true;  //Variable used for isMoving, true = right, false = left
-    protected Rigidbody2D rb;
+    public Rigidbody2D rb;
+    [HideInInspector] public bool isPulled;
+    [SerializeField] private bool overrideConstraintCheck;
 
-    [SerializeField] protected bool realityRealm = true;         // This is the bool that all objects will look to, to make sure they're in the correct realm.
+    public bool realityRealm = true;         // This is the bool that all objects will look to, to make sure they're in the correct realm.
 
     [Header("Reality Realm")]           // All toggleable options for reality, plus the points and movingSpeed settings for isMoving
-    [SerializeField] private bool isPushable = false;
+    public bool isPushable = false;
     [SerializeField] private bool isPressureplate = false;
     [SerializeField] private bool isMoving = false;
     [Tooltip("The two points the object will go between. X < Y!")]      // Hover over "points"
@@ -21,7 +23,7 @@ public class ObjectBase : MonoBehaviour
 
     [Space]
     [Header("Quantum Realm")]           // These are all the toggleable options for quantum
-    [SerializeField] private bool isPushable_q = false;
+    public bool isPushable_q = false;
     [SerializeField] private bool isPressureplate_q = false;
     [SerializeField] private bool isMoving_q = false;
 
@@ -44,6 +46,11 @@ public class ObjectBase : MonoBehaviour
 
     protected virtual void FixedUpdate()    // Can institute any reality vs quantum logic here
     {
+        if (!overrideConstraintCheck)
+        {
+            CheckConstraints();
+        }
+
         if (realityRealm)
         {
             if (isMoving)
@@ -80,6 +87,18 @@ public class ObjectBase : MonoBehaviour
             _direction = false;                             // If going right but at or past y, go left
         else if (!_direction && rb.position.x <= points.x)  // If going left but at or pasy x, go right
             _direction = true;
+    }
+
+    void CheckConstraints()
+    {
+        if (isMoving && realityRealm || isMoving_q && !realityRealm)
+        {
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        }
+        if (!isPulled && (!isMoving && realityRealm || !isMoving_q && !realityRealm))
+        {
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionX;
+        }
     }
 
     void OnDrawGizmosSelected()             // This draws circles on the location of the points! In fancy technicolor!
