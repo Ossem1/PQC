@@ -94,10 +94,12 @@ public class ObjectBase : MonoBehaviour
         if (isMoving && realityRealm || isMoving_q && !realityRealm)
         {
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            rb.bodyType = RigidbodyType2D.Kinematic;
         }
         if (!isPulled && (!isMoving && realityRealm || !isMoving_q && !realityRealm))
         {
             rb.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionX;
+            rb.bodyType = RigidbodyType2D.Dynamic;
         }
     }
 
