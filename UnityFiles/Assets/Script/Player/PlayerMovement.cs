@@ -61,6 +61,11 @@ public class PlayerMovement : ObjectBase
     Coroutine _stopMovement;
     Coroutine _changeSpeed;
 
+    //Animation Values
+    Animator animator;
+    bool _isMoving;
+    float _iTimeElpased;
+
     //Delegated Methods
     private delegate void VerticalMovementBehavior();
     private VerticalMovementBehavior currentVerticalMovement; 
@@ -72,6 +77,7 @@ public class PlayerMovement : ObjectBase
     {
         sprite = GetComponent<SpriteRenderer>();
         playerInput = GetComponent<PlayerInput>();
+        animator = GetComponent<Animator>();
     }
     protected override void OnEnable()
     {
@@ -85,6 +91,7 @@ public class PlayerMovement : ObjectBase
     void Update()
     {
         if(chargeAction != null) { chargeAction(); }      //Current Assigned action to charge key
+        AnimationValues();
         CoyoteTiming();
         Flip();
     }
@@ -128,7 +135,8 @@ public class PlayerMovement : ObjectBase
     float JumpForce(float jumpHeight)
     {
         float gravity = Physics2D.gravity.y * rb.gravityScale;
-        return Mathf.Sqrt(-2 * gravity * jumpHeight);
+        float MaxHeight = Mathf.Sqrt(-2 * gravity * jumpHeight);
+        return MaxHeight;
     }
 
     //Reality vertical movement has a charged long jump
@@ -189,16 +197,8 @@ public class PlayerMovement : ObjectBase
     {
         if (playerInput.movementStarted)
         {
-            if(_stopMovement != null)
-            {   
-                StopCoroutine(_stopMovement);
-                _stopMovement = null;
-            }
-            if(_changeSpeed != null)
-            {
-                StopCoroutine(_changeSpeed);
-            }
-            _changeSpeed = StartCoroutine(Accelerate());
+            _isMoving = true;
+            AccelerateIenumerator();
         }
         if (playerInput.movementInput != Vector2.zero)
         {
@@ -206,17 +206,36 @@ public class PlayerMovement : ObjectBase
         }
         else if(playerInput.movementStoped)
         {
-            if(_changeSpeed != null)
-            {   
-                StopCoroutine(_changeSpeed);
-                _changeSpeed = null;
-            }
-            if(_stopMovement != null)
-            {
-                StopCoroutine(_stopMovement);
-            }
-            _stopMovement = StartCoroutine(Decelerate());
+            DecelerateIenumerator();
         }
+    }
+
+    void AccelerateIenumerator()
+    {
+        if (_stopMovement != null)
+        {
+            StopCoroutine(_stopMovement);
+            _stopMovement = null;
+        }
+        if (_changeSpeed != null)
+        {
+            StopCoroutine(_changeSpeed);
+        }
+        _changeSpeed = StartCoroutine(Accelerate());
+    }
+
+    void DecelerateIenumerator()
+    {
+        if (_changeSpeed != null)
+        {
+            StopCoroutine(_changeSpeed);
+            _changeSpeed = null;
+        }
+        if (_stopMovement != null)
+        {
+            StopCoroutine(_stopMovement);
+        }
+        _stopMovement = StartCoroutine(Decelerate());
     }
 
     //Dynamically changes speed of player, requires a time for duration and target speed
@@ -253,6 +272,7 @@ public class PlayerMovement : ObjectBase
             elapsed += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
+        _isMoving = false;
         rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
     }
 
@@ -274,15 +294,7 @@ public class PlayerMovement : ObjectBase
     //allows player moment to jump when not grounded
     void CoyoteTiming()
     {
-        //Sets conditions for coyote time
-        if (!IsGrounded())
-        {
-            _groundTimer -= Time.deltaTime;
-        }
-        else
-        {
-            _groundTimer = _coyoteTime;
-        }
+        _groundTimer = !IsGrounded() ? _groundTimer -= Time.deltaTime : _coyoteTime;
         _canJump = _groundTimer >= 0f;
     }
 
@@ -319,6 +331,20 @@ public class PlayerMovement : ObjectBase
     {
         float direction = (_isFacingRight) ? 1f: -1;
         return direction;
+    }
+
+
+    void AnimationValues()
+    {
+        _iTimeElpased = rb.linearVelocityX == 0 ? _iTimeElpased += Time.deltaTime : 0f;  
+
+        animator.SetFloat("X_Velocity", rb.linearVelocityX);
+        animator.SetFloat("Y_Velocity", rb.linearVelocityY);
+        animator.SetFloat("I_TimeElpased", _iTimeElpased);
+
+        animator.SetBool("Grounded", IsGrounded());
+        animator.SetBool("Action", _toggleCharge);
+        animator.SetBool("Moving", _isMoving);
     }
 
     //Used to find if player is grounded
