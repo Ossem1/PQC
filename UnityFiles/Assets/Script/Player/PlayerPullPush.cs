@@ -60,7 +60,6 @@ public class PlayerPullPush : MonoBehaviour
         if (col.gameObject == touchedObject)
         {
             touchedObject = null;
-            Debug.Log(col.gameObject.name);
         }
     }
 
@@ -88,17 +87,17 @@ public class PlayerPullPush : MonoBehaviour
         _beingPulled = true;
         joint.connectedBody = objectScript.rb;
         objectScript.isPulled = true;
-        objectScript.rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         joint.enabled = true;
+        Debug.Log("AttachingObject");
     }
 
     void DetachObject()
     {
         joint.enabled = false;
         objectScript.isPulled = false;
-        objectScript.rb.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionX;
         joint.connectedBody = null;
         _beingPulled = false;
+        Debug.Log("DetachingObject");
     }
         
 }

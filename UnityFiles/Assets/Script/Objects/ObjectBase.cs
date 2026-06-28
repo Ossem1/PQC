@@ -7,7 +7,7 @@ public class ObjectBase : MonoBehaviour
     // Generic variables
     private Vector2 _position;
     private bool _direction = true;  //Variable used for isMoving, true = right, false = left
-    public Rigidbody2D rb;
+    [HideInInspector] public Rigidbody2D rb;
     [HideInInspector] public bool isPulled;
     [SerializeField] private bool overrideConstraintCheck;
 
@@ -91,14 +91,21 @@ public class ObjectBase : MonoBehaviour
 
     void CheckConstraints()
     {
-        if (isMoving && realityRealm || isMoving_q && !realityRealm)
+        bool shouldMove = (realityRealm && isMoving) || (!realityRealm && isMoving_q);
+
+        if (shouldMove)
         {
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             rb.bodyType = RigidbodyType2D.Kinematic;
         }
-        if (!isPulled && (!isMoving && realityRealm || !isMoving_q && !realityRealm))
+        else if (!isPulled)
         {
             rb.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionX;
+            rb.bodyType = RigidbodyType2D.Dynamic;
+        }
+        else
+        {
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             rb.bodyType = RigidbodyType2D.Dynamic;
         }
     }
